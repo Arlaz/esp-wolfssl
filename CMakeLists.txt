@@ -1,38 +1,29 @@
-set(wolfssl_VERSION "4.1.0")
+set(wolfssl_VERSION "4.6.0")
 set(wolfssl_THIRDPARTY_ROOT "wolfssl-${wolfssl_VERSION}")
 
 file(GLOB WOLF_SRCS
-  "${wolfssl_THIRDPARTY_ROOT}/wolfcrypt/src/*.c"
-  "${wolfssl_THIRDPARTY_ROOT}/wolfcrypt/src/*.cpp"
-  "${wolfssl_THIRDPARTY_ROOT}/wolfcrypt/src/memory.c"
-  "${wolfssl_THIRDPARTY_ROOT}/wolfcrypt/src/*.i"
-  "${wolfssl_THIRDPARTY_ROOT}/src/*.cpp"
-  "${wolfssl_THIRDPARTY_ROOT}/src/*.c"
-  "${wolfssl_THIRDPARTY_ROOT}/src/*.s"
+        "${wolfssl_THIRDPARTY_ROOT}/wolfcrypt/src/*.c"
+        "${wolfssl_THIRDPARTY_ROOT}/wolfcrypt/src/*.cpp"
+        "${wolfssl_THIRDPARTY_ROOT}/wolfcrypt/src/memory.c"
+        "${wolfssl_THIRDPARTY_ROOT}/wolfcrypt/src/*.i"
+        "${wolfssl_THIRDPARTY_ROOT}/src/*.cpp"
+        "${wolfssl_THIRDPARTY_ROOT}/src/*.c"
+        "${wolfssl_THIRDPARTY_ROOT}/src/*.s"
 )
 
-set(COMPONENT_SRCS
-  ${WOLF_SRCS}
+idf_component_register(
+        SRCS
+            ${WOLF_SRCS}
+        INCLUDE_DIRS
+            "."
+            "include/"
+            "${wolfssl_THIRDPARTY_ROOT}"
+        EXCLUDE_SRCS
+            "${wolfssl_THIRDPARTY_ROOT}/src/bio.c"
+            "${wolfssl_THIRDPARTY_ROOT}/wolfcrypt/src/aes.c"
+            "${wolfssl_THIRDPARTY_ROOT}/wolfcrypt/src/aes_asm.s"
+        REQUIRES http-parser
 )
-
-set(COMPONENT_SRCEXCLUDE
-  "${wolfssl_THIRDPARTY_ROOT}/src/bio.c"
-  "${wolfssl_THIRDPARTY_ROOT}/wolfcrypt/src/aes.c"
-  "${wolfssl_THIRDPARTY_ROOT}/wolfcrypt/src/aes_asm.s"
-
-)
-
-set(COMPONENT_ADD_INCLUDEDIRS
-  "."
-  "include/"
-  "${wolfssl_THIRDPARTY_ROOT}"
-)
-
-set(COMPONENT_REQUIRES http-parser)
-set(COMPONENT_NAME "wolfssl")
-
-
-register_component()
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} \
   -DWOLFSSL_USER_SETTINGS \
